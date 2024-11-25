@@ -108,10 +108,10 @@ For detailed API documentation, see:
 Create a dependency container using `makeBox()` and define your dependencies:
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // Create a box with dependencies
-const box = Box.makeBox()
+const box = DI.makeBox()
   .set('config', () => ({ apiUrl: 'https://api.example.com' }))
   .set('api', (box) => new ApiClient(box.get('config').apiUrl))
   .set('users', (box) => box.get('api').getUsers());
@@ -126,6 +126,8 @@ const sameUsers = box.get('users'); // Returns cached value
 You can add new dependencies using `set()` or `patch()`:
 
 ```typescript
+import * as DI from '@ayka/dibox';
+
 // Add a single dependency
 const boxWithLogger = box.set('logger', () => new Logger());
 
@@ -177,10 +179,10 @@ box.get('invalid'); // Error: Argument of type '"invalid"' is not assignable...
 dibox automatically detects and reports circular dependencies at runtime. A circular dependency occurs when two or more dependencies depend on each other in a cycle.
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // This will throw CircularDependencyError
-const box = Box.makeBox()
+const box = DI.makeBox()
   .set('chicken', (box) => box.get('egg'))
   .set('egg', (box) => box.get('chicken'));
 
@@ -193,15 +195,15 @@ const box = Box.makeBox()
 ##### 1. **Use a Shared Configuration**
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // ❌ Circular dependency
-const badBox = Box.makeBox()
+const badBox = DI.makeBox()
   .set('userService', (box) => new UserService(box.get('authService')))
   .set('authService', (box) => new AuthService(box.get('userService')));
 
 // ✅ Share configuration instead
-const goodBox = Box.makeBox()
+const goodBox = DI.makeBox()
   .set('config', () => ({
     userApi: 'https://api.example.com/users',
     authApi: 'https://api.example.com/auth',
@@ -213,15 +215,15 @@ const goodBox = Box.makeBox()
 ##### 2. **Use Interface Segregation**
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // ❌ Circular dependency
-const badBox = Box.makeBox()
+const badBox = DI.makeBox()
   .set('orderProcessor', (box) => new OrderProcessor(box.get('inventory')))
   .set('inventory', (box) => new Inventory(box.get('orderProcessor')));
 
 // ✅ Split into smaller, focused interfaces
-const goodBox = Box.makeBox()
+const goodBox = DI.makeBox()
   .set('inventoryReader', () => new InventoryReader())
   .set(
     'orderProcessor',
@@ -243,7 +245,7 @@ The `CircularDependencyError` includes helpful information to debug the cycle:
 try {
   box.get('chicken');
 } catch (error) {
-  if (error instanceof Box.CircularDependencyError) {
+  if (error instanceof DI.CircularDependencyError) {
     console.log(error.message); // Circular dependency detected...
     console.log(error.key); // 'chicken'
     console.log(error.unresolvedKeys); // Set { 'chicken', 'egg' }
@@ -292,9 +294,9 @@ For more examples and detailed API documentation, see the [API Documentation](do
 The box provides a convenient proxy interface that allows you to access dependencies using property syntax:
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
-const box = Box.makeBox({
+const box = DI.makeBox({
   config: () => ({ apiUrl: 'https://api.example.com' }),
   api: (box) => new ApiClient(box.get('config').apiUrl),
   users: (box) => box.get('api').getUsers(),
