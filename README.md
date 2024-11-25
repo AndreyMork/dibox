@@ -74,6 +74,7 @@ dibox is a lightweight, **type-safe dependency injection container** for TypeScr
 
 - [Overview](#overview)
   - [Key Features](#key-features)
+- [API Reference](#api-reference)
 - [Usage](#usage)
   - [Basic Usage](#basic-usage)
   - [Adding Dependencies](#adding-dependencies)
@@ -91,6 +92,14 @@ dibox is a lightweight, **type-safe dependency injection container** for TypeScr
   - [Async Dependency](#async-dependency)
 - [Contributing](#contributing)
 - [License](#license)
+
+## API Reference
+
+For detailed API documentation, see:
+
+- [API Documentation](docs/globals.md) - Complete API reference with types and examples
+- [Box Class](docs/namespaces/Box/classes/Box.md) - Core container class documentation
+- [Test Examples](tests/Box.test.ts) - Comprehensive examples of all features in test form
 
 ## Usage
 
