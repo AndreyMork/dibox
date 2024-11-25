@@ -67,8 +67,6 @@ dibox is a lightweight, **type-safe dependency injection container** for TypeScr
 
 - **Modular Applications**: Organize and manage complex dependency graphs
 - **Testing**: Easily mock dependencies for unit and integration tests
-- **Microservices**: Configure and manage service dependencies
-- **Libraries**: Create flexible, configurable library interfaces
 
 ## Table of Contents
 
