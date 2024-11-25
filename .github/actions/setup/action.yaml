@@ -1,0 +1,19 @@
+name: Setup
+
+inputs:
+  node-version:
+    description: 'Node.js version to install'
+    default: 20
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: extractions/setup-just@v2
+    - uses: pnpm/action-setup@v4.0.0
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        check-latest: true
+        cache: 'pnpm'
+    - run: pnpm install --frozen-lockfile
+      shell: bash

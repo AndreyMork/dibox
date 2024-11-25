@@ -1,0 +1,5 @@
+dist
+coverage
+*.min.css
+pnpm-lock.yaml
+docs/

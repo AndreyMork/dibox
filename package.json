@@ -1,0 +1,64 @@
+{
+	"name": "@ayka/dibox",
+	"version": "0.1.0",
+	"description": "A type-safe dependency injection container with lazy loading and caching",
+	"keywords": [
+		"dependency-injection",
+		"di",
+		"container",
+		"typescript",
+		"type-safe",
+		"lazy-loading",
+		"ioc",
+		"inversion-of-control",
+		"injection"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/AndreyMork/dibox.git"
+	},
+	"license": "MIT",
+	"type": "module",
+	"packageManager": "pnpm@9.14.2",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/Main.d.ts",
+			"import": "./dist/Main.js",
+			"require": "./dist/Main.cjs"
+		}
+	},
+	"files": [
+		"dist/"
+	],
+	"scripts": {
+		"prepack": "just prepack",
+		"test": "just test",
+		"preversion": "just full-check-strict prepack"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@ayka/biome-config": "^1.1.0",
+		"@ayka/tsconfig": "^1.0.0",
+		"@biomejs/biome": "^1.9.4",
+		"@japa/expect": "^3.0.2",
+		"@japa/expect-type": "^2.0.2",
+		"@japa/runner": "^3.1.4",
+		"@stryker-mutator/core": "^8.6.0",
+		"@stryker-mutator/typescript-checker": "^8.6.0",
+		"@types/node": "^22.9.3",
+		"c8": "^10.1.2",
+		"npm-check-updates": "^17.1.11",
+		"prettier": "^3.3.3",
+		"tsup": "^8.3.5",
+		"tsx": "^4.19.2",
+		"typedoc": "^0.26.11",
+		"typedoc-plugin-markdown": "^4.2.10",
+		"typescript": "^5.7.2"
+	}
+}

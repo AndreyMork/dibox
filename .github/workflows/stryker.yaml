@@ -1,0 +1,27 @@
+name: Stryker Mutator Coverage
+run-name: 'Stryker Mutator coverage [#${{ github.event_name}} ${{ github.event.head_commit.message }}]'
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stryker:
+    name: Stryker mutator tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Stryker
+        run: just stryker --force --reporters=clear-text,progress-append-only,dashboard
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+          STRYKER_DASHBOARD_PROJECT: ${{ github.repository }}
+          STRYKER_DASHBOARD_VERSION: ${{ github.ref_name }}

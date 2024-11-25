@@ -1,0 +1,23 @@
+name: Dependency audit
+run-name: 'Dependency audit [#${{ github.event_name}} ${{ github.event.head_commit.message }}]'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [main, develop]
+
+jobs:
+  deps-audit:
+    name: Dependencies audit should pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Audit
+        run: just audit --prod

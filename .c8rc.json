@@ -1,0 +1,6 @@
+{
+	"all": true,
+	"src": ["src"],
+	"reporter": ["text", "html", "lcov"],
+	"exclude": ["tests", "**/*.d.ts", "src/Errors.ts"]
+}

@@ -1,0 +1,16 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["@ayka/biome-config"],
+	"vcs": {
+		"enabled": true,
+		"defaultBranch": "main",
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignore": ["local", "dist", "coverage"]
+	},
+	"linter": {
+		"ignore": ["dev"]
+	}
+}

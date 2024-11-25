@@ -1,0 +1,13 @@
+{
+	"$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+	"reporters": ["html", "clear-text", "progress"],
+	"testRunner": "command",
+	"coverageAnalysis": "off",
+	"incremental": true,
+	"plugins": ["@stryker-mutator/typescript-checker"],
+	"checkers": ["typescript"],
+	"tsconfigFile": "tsconfig.check.json",
+	"mutator": {
+		"excludedMutations": ["StringLiteral"]
+	}
+}

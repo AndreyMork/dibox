@@ -1,0 +1,40 @@
+name: CI
+run-name: 'CI checks [#${{ github.event_name}} ${{ github.event.head_commit.message }}]'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [main, develop]
+
+jobs:
+  version-matrix:
+    name: Node
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+    uses: ./.github/workflows/ci-jobs.yaml
+    secrets: inherit
+    with:
+      node-version: ${{ matrix.node-version }}
+
+  test-coverage:
+    name: Test coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Test
+        run: just test
+      - uses: paambaati/codeclimate-action@v9
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: just coverage --reporter lcov
+          coverageLocations: coverage/lcov.info:lcov

@@ -1,0 +1,13 @@
+version: '2'
+
+plugins:
+  duplication:
+    enabled: true
+  editorconfig:
+    enabled: true
+  fixme:
+    enabled: true
+  git-legal:
+    enabled: true
+  shellcheck:
+    enabled: true
