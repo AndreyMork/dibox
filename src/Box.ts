@@ -537,7 +537,12 @@ class Box<shape extends boxShape> {
 	 * @returns An array of keys of type `keyof shape`
 	 */
 	keys() {
-		return Object.keys(this.#registry) as (keyof shape)[];
+		const keys = Object.keys(this.#registry) as (keyof shape)[];
+		const symKeys = Object.getOwnPropertySymbols(
+			this.#registry,
+		) as (keyof shape)[];
+
+		return [...keys, ...symKeys];
 	}
 
 	/**
@@ -556,7 +561,7 @@ class Box<shape extends boxShape> {
 	 */
 	values() {
 		this.preload(true);
-		return Object.values(this.#cache) as shape[keyof shape][];
+		return this.entries().map(([, value]) => value);
 	}
 
 	/**
@@ -574,8 +579,9 @@ class Box<shape extends boxShape> {
 	 * @returns An array of [key, value] pairs of type `[keyof shape, shape[keyof shape]][]`
 	 */
 	entries() {
-		this.preload(true);
-		return Object.entries(this.#cache) as [keyof shape, shape[keyof shape]][];
+		return this.keys().map(
+			(key) => [key, this.get(key)] as [keyof shape, shape[keyof shape]],
+		);
 	}
 
 	/**

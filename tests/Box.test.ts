@@ -642,25 +642,41 @@ test.group('Box: iteration', () => {
 		expect,
 		expectTypeOf,
 	}) => {
-		const box = DI.makeBox({ foo: () => 'bar', baz: () => 123 });
+		const qux = Symbol('qux');
+		const box = DI.makeBox({
+			foo: () => 'bar',
+			baz: () => 123,
+			[qux]: () => 'qux',
+		});
 		expect(box.entries()).toStrictEqual([
 			['foo', 'bar'],
 			['baz', 123],
+			[qux, 'qux'],
 		]);
 		expectTypeOf(box.entries()).toEqualTypeOf<
-			[key: 'foo' | 'baz', value: string | number][]
+			[key: 'foo' | 'baz' | typeof qux, value: string | number][]
 		>();
 	});
 
 	test('`keys` returns an array of keys', ({ expect, expectTypeOf }) => {
-		const box = DI.makeBox({ foo: () => 'bar', baz: () => 123 });
-		expect(box.keys()).toStrictEqual(['foo', 'baz']);
-		expectTypeOf(box.keys()).toEqualTypeOf<('foo' | 'baz')[]>();
+		const qux = Symbol('qux');
+		const box = DI.makeBox({
+			foo: () => 'bar',
+			baz: () => 123,
+			[qux]: () => 'qux',
+		});
+		expect(box.keys()).toStrictEqual(['foo', 'baz', qux]);
+		expectTypeOf(box.keys()).toEqualTypeOf<('foo' | 'baz' | typeof qux)[]>();
 	});
 
 	test('`values` returns an array of values', ({ expect, expectTypeOf }) => {
-		const box = DI.makeBox({ foo: () => 'bar', baz: () => 123 });
-		expect(box.values()).toStrictEqual(['bar', 123]);
+		const qux = Symbol('qux');
+		const box = DI.makeBox({
+			foo: () => 'bar',
+			baz: () => 123,
+			[qux]: () => 'qux',
+		});
+		expect(box.values()).toStrictEqual(['bar', 123, 'qux']);
 		expectTypeOf(box.values()).toEqualTypeOf<(string | number)[]>();
 	});
 
@@ -791,20 +807,24 @@ test.group('Box: toJS', () => {
 		expect,
 		expectTypeOf,
 	}) => {
+		const qux = Symbol('qux');
 		const box = DI.makeBox({
 			name: () => 'Alice',
 			age: () => 30,
+			[qux]: () => 'qux',
 		});
 
 		const obj = box.toJS();
 		expect(obj).toStrictEqual({
 			name: 'Alice',
 			age: 30,
+			[qux]: 'qux',
 		});
 
 		expectTypeOf(obj).toEqualTypeOf<{
 			name: string;
 			age: number;
+			[qux]: string;
 		}>();
 	});
 
