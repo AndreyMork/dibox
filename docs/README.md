@@ -95,6 +95,7 @@ Perfect for:
 - 🎯 **Type-safe**: Full TypeScript support with type inference
 - 🔄 **Immutable**: All operations return new container instances
 - 🦥 **Lazy loading**: Dependencies are only initialized when first accessed
+- 🧹 **Cache control**: Clear specific cached values or reset the entire cache
 - 🎮 **Easy API**: Simple and intuitive API for managing dependencies
 - 🔍 **Circular dependency detection**: Automatically detects and reports circular dependencies
 
