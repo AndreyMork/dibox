@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[src/Box.ts:777](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L777)
+[src/Box.ts:777](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L777)
 
 ## Properties
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[src/Box.ts:776](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L776)
+[src/Box.ts:776](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L776)
 
 ***
 
@@ -66,7 +66,7 @@ node\_modules/.pnpm/typescript@5.7.2/node\_modules/typescript/lib/lib.es2022.err
 
 #### Defined in
 
-[src/Box.ts:775](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L775)
+[src/Box.ts:775](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L775)
 
 ***
 
@@ -168,7 +168,7 @@ node\_modules/.pnpm/@types+node@22.9.3/node\_modules/@types/node/globals.d.ts:14
 
 #### Defined in
 
-[src/Box.ts:790](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L790)
+[src/Box.ts:790](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L790)
 
 ## Methods
 

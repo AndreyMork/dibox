@@ -34,7 +34,7 @@
 <!-- Badges -->
 
 [![NPM Version][npm-version-badge]][npm-url]
-[![NPM Version][npm-version-next-badge]][npm-next-url]
+<!-- [![NPM Version][npm-version-next-badge]][npm-next-url] -->
 [![NPM License][license-badge]][license-url]
 [![NPM Downloads][npm-downloads-badge]][npm-url]
 

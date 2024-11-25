@@ -10,4 +10,4 @@
 
 ## Defined in
 
-[src/Box.ts:47](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L47)
+[src/Box.ts:47](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L47)

@@ -36,7 +36,7 @@
 
 #### Defined in
 
-[src/Box.ts:800](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L800)
+[src/Box.ts:800](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L800)
 
 ## Properties
 
@@ -46,7 +46,7 @@
 
 #### Defined in
 
-[src/Box.ts:797](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L797)
+[src/Box.ts:797](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L797)
 
 ***
 
@@ -70,7 +70,7 @@ node\_modules/.pnpm/typescript@5.7.2/node\_modules/typescript/lib/lib.es2022.err
 
 #### Defined in
 
-[src/Box.ts:796](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L796)
+[src/Box.ts:796](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L796)
 
 ***
 
@@ -122,7 +122,7 @@ node\_modules/.pnpm/typescript@5.7.2/node\_modules/typescript/lib/lib.es5.d.ts:1
 
 #### Defined in
 
-[src/Box.ts:798](https://github.com/AndreyMork/dibox/blob/a0c5779a3595f9dce73587b31054bdf92e8a3ef1/src/Box.ts#L798)
+[src/Box.ts:798](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L798)
 
 ***
 
