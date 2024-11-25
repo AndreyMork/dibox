@@ -51,7 +51,7 @@
 
 ## Overview
 
-dibox is a lightweight, **type-safe dependency injection container** for TypeScript/JavaScript applications. It provides a simple yet powerful way to manage dependencies with features like lazy loading, immutable API, and **automatic circular dependency detection**.
+`dibox` is a lightweight, **type-safe dependency injection container** for TypeScript/JavaScript applications. It provides a simple yet powerful way to manage dependencies with features like lazy loading, immutable API, and **automatic circular dependency detection**.
 
 ### Key Features
 
