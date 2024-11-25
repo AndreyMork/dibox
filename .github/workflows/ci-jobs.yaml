@@ -8,39 +8,6 @@ on:
         type: number
 
 jobs:
-  format-check:
-    name: Format check should pass
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-        with:
-          node-version: ${{ inputs.node-version }}
-      - name: Format
-        run: just format-check
-
-  lint:
-    name: Lint should pass
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-        with:
-          node-version: ${{ inputs.node-version }}
-      - name: Lint
-        run: just lint
-
-  typecheck:
-    name: Type Check should pass
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-        with:
-          node-version: ${{ inputs.node-version }}
-      - name: Type Check
-        run: just typecheck
-
   test:
     name: Tests should pass
     runs-on: ubuntu-latest

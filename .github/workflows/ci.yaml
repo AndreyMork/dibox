@@ -24,6 +24,33 @@ jobs:
     with:
       node-version: ${{ matrix.node-version }}
 
+  format-check:
+    name: Format check should pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Format
+        run: just format-check
+
+  lint:
+    name: Lint should pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Lint
+        run: just lint
+
+  typecheck:
+    name: Type Check should pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Type Check
+        run: just typecheck
+
   test-coverage:
     name: Test coverage
     runs-on: ubuntu-latest
