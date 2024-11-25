@@ -1,6 +1,6 @@
 {
 	"name": "@ayka/dibox",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "A type-safe dependency injection container with lazy loading and caching",
 	"keywords": [
 		"dependency-injection",
