@@ -37,8 +37,9 @@
 
 <!-- Badges -->
 
-[![NPM Version][npm-version-badge]][npm-url]
 <!-- [![NPM Version][npm-version-next-badge]][npm-next-url] -->
+
+[![NPM Version][npm-version-badge]][npm-url]
 [![NPM License][license-badge]][license-url]
 [![NPM Downloads][npm-downloads-badge]][npm-url]
 
@@ -52,10 +53,30 @@
 [![Test Coverage][codeclimate-test-coverage-badge]][codeclimate-url]
 [![Mutation testing badge][mutation-testing-badge]][mutation-testing-url]
 
+## Overview
+
+dibox is a lightweight, **type-safe dependency injection container** for TypeScript/JavaScript applications. It provides a simple yet powerful way to manage dependencies with features like lazy loading, immutable API, and **automatic circular dependency detection**.
+
+### Key Features
+
+- 🎯 **Type Safety**: Full TypeScript support with automatic type inference
+- 🦥 **Lazy Loading**: Dependencies are only initialized when needed
+- 🔄 **Immutable API**: Prevents side effects and makes state management predictable
+- 🪶 **Zero Dependencies**: Lightweight and focused on core DI functionality
+- 🎮 **Easy API**: Simple and intuitive API for managing dependencies
+- 🔍 **Circular Dependency Detection**: Automatically detects and reports circular dependencies
+- 🔌 **Framework Agnostic**: Works with any JavaScript/TypeScript project
+
+### Perfect For
+
+- **Modular Applications**: Organize and manage complex dependency graphs
+- **Testing**: Easily mock dependencies for unit and integration tests
+
 ## Table of Contents
 
 - [Overview](#overview)
   - [Key Features](#key-features)
+- [API Reference](#api-reference)
 - [Usage](#usage)
   - [Basic Usage](#basic-usage)
   - [Adding Dependencies](#adding-dependencies)
@@ -74,29 +95,13 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-## Overview
+## API Reference
 
-A lightweight, type-safe dependency injection container for TypeScript/JavaScript applications. Designed for simplicity and flexibility, dibox helps you manage application dependencies with:
+For detailed API documentation, see:
 
-- Type-safe dependency injection
-- Lazy loading for better performance
-- Immutable API to prevent side effects
-- Simple and intuitive interface
-
-Perfect for:
-
-- Building modular applications
-- Testing with dependency mocking
-- Managing complex dependency graphs
-- Creating configurable services
-
-### Key Features
-
-- 🎯 **Type-safe**: Full TypeScript support with type inference
-- 🔄 **Immutable**: All operations return new container instances
-- 🦥 **Lazy loading**: Dependencies are only initialized when first accessed
-- 🎮 **Easy API**: Simple and intuitive API for managing dependencies
-- 🔍 **Circular dependency detection**: Automatically detects and reports circular dependencies
+- [API Documentation](_media/globals.md) - Complete API reference with types and examples
+- [Box Class](_media/Box.md) - Core container class documentation
+- [Test Examples](_media/Box.test.ts) - Comprehensive examples of all features in test form
 
 ## Usage
 
@@ -105,10 +110,10 @@ Perfect for:
 Create a dependency container using `makeBox()` and define your dependencies:
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // Create a box with dependencies
-const box = Box.makeBox()
+const box = DI.makeBox()
   .set('config', () => ({ apiUrl: 'https://api.example.com' }))
   .set('api', (box) => new ApiClient(box.get('config').apiUrl))
   .set('users', (box) => box.get('api').getUsers());
@@ -123,6 +128,8 @@ const sameUsers = box.get('users'); // Returns cached value
 You can add new dependencies using `set()` or `patch()`:
 
 ```typescript
+import * as DI from '@ayka/dibox';
+
 // Add a single dependency
 const boxWithLogger = box.set('logger', () => new Logger());
 
@@ -174,10 +181,10 @@ box.get('invalid'); // Error: Argument of type '"invalid"' is not assignable...
 dibox automatically detects and reports circular dependencies at runtime. A circular dependency occurs when two or more dependencies depend on each other in a cycle.
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // This will throw CircularDependencyError
-const box = Box.makeBox()
+const box = DI.makeBox()
   .set('chicken', (box) => box.get('egg'))
   .set('egg', (box) => box.get('chicken'));
 
@@ -190,15 +197,15 @@ const box = Box.makeBox()
 ##### 1. **Use a Shared Configuration**
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // ❌ Circular dependency
-const badBox = Box.makeBox()
+const badBox = DI.makeBox()
   .set('userService', (box) => new UserService(box.get('authService')))
   .set('authService', (box) => new AuthService(box.get('userService')));
 
 // ✅ Share configuration instead
-const goodBox = Box.makeBox()
+const goodBox = DI.makeBox()
   .set('config', () => ({
     userApi: 'https://api.example.com/users',
     authApi: 'https://api.example.com/auth',
@@ -210,15 +217,15 @@ const goodBox = Box.makeBox()
 ##### 2. **Use Interface Segregation**
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
 // ❌ Circular dependency
-const badBox = Box.makeBox()
+const badBox = DI.makeBox()
   .set('orderProcessor', (box) => new OrderProcessor(box.get('inventory')))
   .set('inventory', (box) => new Inventory(box.get('orderProcessor')));
 
 // ✅ Split into smaller, focused interfaces
-const goodBox = Box.makeBox()
+const goodBox = DI.makeBox()
   .set('inventoryReader', () => new InventoryReader())
   .set(
     'orderProcessor',
@@ -240,7 +247,7 @@ The `CircularDependencyError` includes helpful information to debug the cycle:
 try {
   box.get('chicken');
 } catch (error) {
-  if (error instanceof Box.CircularDependencyError) {
+  if (error instanceof DI.CircularDependencyError) {
     console.log(error.message); // Circular dependency detected...
     console.log(error.key); // 'chicken'
     console.log(error.unresolvedKeys); // Set { 'chicken', 'egg' }
@@ -289,9 +296,9 @@ For more examples and detailed API documentation, see the [API Documentation](_m
 The box provides a convenient proxy interface that allows you to access dependencies using property syntax:
 
 ```typescript
-import * as Box from '@ayka/dibox';
+import * as DI from '@ayka/dibox';
 
-const box = Box.makeBox({
+const box = DI.makeBox({
   config: () => ({ apiUrl: 'https://api.example.com' }),
   api: (box) => new ApiClient(box.get('config').apiUrl),
   users: (box) => box.get('api').getUsers(),

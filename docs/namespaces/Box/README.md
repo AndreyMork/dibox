@@ -29,6 +29,7 @@
 
 ### Functions
 
+- [getKeys](functions/getKeys.md)
 - [makeBox](functions/makeBox.md)
 
 ## References

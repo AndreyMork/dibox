@@ -39,4 +39,4 @@ A Box type containing only the specified keys from the original Box
 
 ## Defined in
 
-[src/Box.ts:43](https://github.com/AndreyMork/dibox/blob/2bd8e5086bed82676b3941b99bf52af4c69b030c/src/Box.ts#L43)
+[src/Box.ts:43](https://github.com/AndreyMork/dibox/blob/695789d45a4ef94d6e684c565b58e5a5027b964e/src/Box.ts#L43)
