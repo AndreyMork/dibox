@@ -49,6 +49,27 @@
 [![Test Coverage][codeclimate-test-coverage-badge]][codeclimate-url]
 [![Mutation testing badge][mutation-testing-badge]][mutation-testing-url]
 
+## Overview
+
+dibox is a lightweight, **type-safe** dependency injection container for TypeScript/JavaScript applications. It provides a simple yet powerful way to manage dependencies with features like lazy loading, immutable API, and automatic **circular dependency detection**.
+
+### Key Features
+
+- 🎯 **Type Safety**: Full TypeScript support with automatic type inference
+- 🦥 **Lazy Loading**: Dependencies are only initialized when needed
+- 🔄 **Immutable API**: Prevents side effects and makes state management predictable
+- 🪶 **Zero Dependencies**: Lightweight and focused on core DI functionality
+- 🎮 **Easy API**: Simple and intuitive API for managing dependencies
+- 🔍 **Circular Dependency Detection**: Automatically detects and reports circular dependencies
+- 🔌 **Framework Agnostic**: Works with any JavaScript/TypeScript project
+
+### Perfect For
+
+- **Modular Applications**: Organize and manage complex dependency graphs
+- **Testing**: Easily mock dependencies for unit and integration tests
+- **Microservices**: Configure and manage service dependencies
+- **Libraries**: Create flexible, configurable library interfaces
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -70,30 +91,6 @@
   - [Async Dependency](#async-dependency)
 - [Contributing](#contributing)
 - [License](#license)
-
-## Overview
-
-A lightweight, type-safe dependency injection container for TypeScript/JavaScript applications. Designed for simplicity and flexibility, dibox helps you manage application dependencies with:
-
-- Type-safe dependency injection
-- Lazy loading for better performance
-- Immutable API to prevent side effects
-- Simple and intuitive interface
-
-Perfect for:
-
-- Building modular applications
-- Testing with dependency mocking
-- Managing complex dependency graphs
-- Creating configurable services
-
-### Key Features
-
-- 🎯 **Type-safe**: Full TypeScript support with type inference
-- 🔄 **Immutable**: All operations return new container instances
-- 🦥 **Lazy loading**: Dependencies are only initialized when first accessed
-- 🎮 **Easy API**: Simple and intuitive API for managing dependencies
-- 🔍 **Circular dependency detection**: Automatically detects and reports circular dependencies
 
 ## Usage
 
