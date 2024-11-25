@@ -243,6 +243,10 @@ class Box<shape extends boxShape> {
 			cache,
 		});
 
+		for (const key of getKeys(patch)) {
+			newBox.clearCache(key);
+		}
+
 		return newBox;
 	}
 
@@ -537,12 +541,7 @@ class Box<shape extends boxShape> {
 	 * @returns An array of keys of type `keyof shape`
 	 */
 	keys() {
-		const keys = Object.keys(this.#registry) as (keyof shape)[];
-		const symKeys = Object.getOwnPropertySymbols(
-			this.#registry,
-		) as (keyof shape)[];
-
-		return [...keys, ...symKeys];
+		return getKeys(this.#registry);
 	}
 
 	/**
@@ -560,7 +559,6 @@ class Box<shape extends boxShape> {
 	 * @returns An array of values of type `shape[keyof shape][]`
 	 */
 	values() {
-		this.preload(true);
 		return this.entries().map(([, value]) => value);
 	}
 
@@ -776,6 +774,16 @@ export function makeBox<shape extends boxShape>(patch?: patch<shape, {}>) {
 
 	return box.patch(patch);
 }
+
+export const getKeys = <shape extends boxShape>(
+	registry: registry<shape> | patch<shape, any>,
+) => {
+	const keys = Object.keys(registry) as (keyof shape)[];
+	const symKeys = Object.getOwnPropertySymbols(registry).map(
+		(sym) => sym as keyof shape,
+	);
+	return [...keys, ...symKeys];
+};
 
 export class DependencyNotFoundError extends Error {
 	readonly key: boxKey;

@@ -635,6 +635,44 @@ test.group('Box: caching', () => {
 		expect(box1.get('random')).toBe(value1);
 		expect(box1.get('value')).toBe(value2);
 	});
+
+	test('`set/patch` resets cache for updated keys in new box', ({ expect }) => {
+		const box1 = DI.makeBox({
+			foo: () => 'foo',
+			bar: () => 'bar',
+			baz: () => 'baz',
+		});
+
+		// Cache some values in original box
+		box1.get('foo');
+		box1.get('bar');
+		box1.get('baz');
+
+		expect(box1.cached('foo')).toBe(true);
+		expect(box1.cached('bar')).toBe(true);
+		expect(box1.cached('baz')).toBe(true);
+
+		// Test set()
+		const box2 = box1.set('foo', () => 'foo2');
+		expect(box2.cached('foo')).toBe(false); // Updated key should not be cached
+		expect(box2.cached('bar')).toBe(true); // Other keys should keep cache
+		expect(box2.cached('baz')).toBe(true);
+
+		// Test patch()
+		const box3 = box1.patch({
+			foo: () => 'foo3',
+			bar: () => 'bar3',
+		});
+
+		expect(box3.cached('foo')).toBe(false); // Updated keys should not be cached
+		expect(box3.cached('bar')).toBe(false);
+		expect(box3.cached('baz')).toBe(true); // Untouched key should keep cache
+
+		// Original box should be unchanged
+		expect(box1.cached('foo')).toBe(true);
+		expect(box1.cached('bar')).toBe(true);
+		expect(box1.cached('baz')).toBe(true);
+	});
 });
 
 test.group('Box: iteration', () => {
