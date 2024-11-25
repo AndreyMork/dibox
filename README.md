@@ -106,8 +106,8 @@ import * as Box from '@ayka/dibox';
 // Create a box with dependencies
 const box = Box.makeBox()
   .set('config', () => ({ apiUrl: 'https://api.example.com' }))
-  .set('api', box => new ApiClient(box.get('config').apiUrl))
-  .set('users', box => box.get('api').getUsers());
+  .set('api', (box) => new ApiClient(box.get('config').apiUrl))
+  .set('users', (box) => box.get('api').getUsers());
 
 // Access dependencies - they are lazily loaded and cached
 const users = box.get('users'); // API call happens here
@@ -125,7 +125,7 @@ const boxWithLogger = box.set('logger', () => new Logger());
 // Add multiple dependencies
 const boxWithMore = box.patch({
   cache: () => new Cache(),
-  db: (box) => new Database(box.get('config'))
+  db: (box) => new Database(box.get('config')),
 });
 ```
 
@@ -154,12 +154,12 @@ The container is fully type-safe:
 ```typescript
 const box = makeBox({
   name: () => 'Alice',
-  age: () => 30
+  age: () => 30,
 });
 
 // Types are inferred automatically
 const name = box.get('name'); // type: string
-const age = box.get('age');   // type: number
+const age = box.get('age'); // type: number
 
 // TypeScript errors on invalid keys
 box.get('invalid'); // Error: Argument of type '"invalid"' is not assignable...
@@ -174,8 +174,8 @@ import * as Box from '@ayka/dibox';
 
 // This will throw CircularDependencyError
 const box = Box.makeBox()
-  .set('chicken', box => box.get('egg'))
-  .set('egg', box => box.get('chicken'));
+  .set('chicken', (box) => box.get('egg'))
+  .set('egg', (box) => box.get('chicken'));
 
 // Error: Circular dependency detected for key: 'chicken'.
 // Unresolved keys: chicken, egg
@@ -190,17 +190,17 @@ import * as Box from '@ayka/dibox';
 
 // ❌ Circular dependency
 const badBox = Box.makeBox()
-  .set('userService', box => new UserService(box.get('authService')))
-  .set('authService', box => new AuthService(box.get('userService')));
+  .set('userService', (box) => new UserService(box.get('authService')))
+  .set('authService', (box) => new AuthService(box.get('userService')));
 
 // ✅ Share configuration instead
 const goodBox = Box.makeBox()
   .set('config', () => ({
     userApi: 'https://api.example.com/users',
-    authApi: 'https://api.example.com/auth'
+    authApi: 'https://api.example.com/auth',
   }))
-  .set('userService', box => new UserService(box.get('config')))
-  .set('authService', box => new AuthService(box.get('config')));
+  .set('userService', (box) => new UserService(box.get('config')))
+  .set('authService', (box) => new AuthService(box.get('config')));
 ```
 
 ##### 2. **Use Interface Segregation**
@@ -210,14 +210,20 @@ import * as Box from '@ayka/dibox';
 
 // ❌ Circular dependency
 const badBox = Box.makeBox()
-  .set('orderProcessor', box => new OrderProcessor(box.get('inventory')))
-  .set('inventory', box => new Inventory(box.get('orderProcessor')));
+  .set('orderProcessor', (box) => new OrderProcessor(box.get('inventory')))
+  .set('inventory', (box) => new Inventory(box.get('orderProcessor')));
 
 // ✅ Split into smaller, focused interfaces
 const goodBox = Box.makeBox()
   .set('inventoryReader', () => new InventoryReader())
-  .set('orderProcessor', box => new OrderProcessor(box.get('inventoryReader')))
-  .set('inventoryWriter', box => new InventoryWriter(box.get('orderProcessor')));
+  .set(
+    'orderProcessor',
+    (box) => new OrderProcessor(box.get('inventoryReader')),
+  )
+  .set(
+    'inventoryWriter',
+    (box) => new InventoryWriter(box.get('orderProcessor')),
+  );
 ```
 
 The `CircularDependencyError` includes helpful information to debug the cycle:
@@ -283,8 +289,8 @@ import * as Box from '@ayka/dibox';
 
 const box = Box.makeBox({
   config: () => ({ apiUrl: 'https://api.example.com' }),
-  api: box => new ApiClient(box.get('config').apiUrl),
-  users: box => box.get('api').getUsers()
+  api: (box) => new ApiClient(box.get('config').apiUrl),
+  users: (box) => box.get('api').getUsers(),
 });
 
 // Instead of box.get('config')
@@ -327,10 +333,10 @@ For these operations, you'll need to use the regular box methods.
 ```typescript
 const box = makeBox({
   config: () => ({ apiUrl: 'https://api.example.com' }),
-  api: () => new ApiClient()
+  api: () => new ApiClient(),
 });
 
-const fn = (box: typeof box) => {}
+const fn = (box: typeof box) => {};
 
 class TestApiClient extends ApiClient {}
 
