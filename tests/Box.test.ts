@@ -337,6 +337,20 @@ test.group('Box: setting', () => {
 		expect(mergedBox.get('value')).toBe('test');
 		expect(loadCount).toBe(2);
 	});
+
+	test('`mutate` modifies an existing dependency in the box', ({ expect }) => {
+		const box = DI.makeBox({
+			value: () => 'initial',
+		});
+
+		expect(box.get('value')).toBe('initial');
+		expect(box.cached('value')).toBe(true);
+
+		box.mutate('value', () => 'mutated');
+
+		expect(box.cached('value')).toBe(false);
+		expect(box.get('value')).toBe('mutated');
+	});
 });
 
 test.group('Box: getting', () => {

@@ -85,6 +85,7 @@
     - [Cache Control](#cache-control)
     - [Preloading Dependencies](#preloading-dependencies)
   - [Proxy Access](#proxy-access)
+  - [Mutating Dependencies](#mutating-dependencies)
 - [Receipts](#receipts)
   - [Overriding Dependencies for Testing](#overriding-dependencies-for-testing)
   - [Async Dependency](#async-dependency)
@@ -332,6 +333,32 @@ Note that while proxy access is convenient, it doesn't support all box features:
 - Can't clear cache through proxy
 
 For these operations, you'll need to use the regular box methods.
+
+### Mutating Dependencies
+
+The `mutate` method allows you to modify a single dependency in the current box instance. Unlike `patch()` or `set()`, which create a new box, `mutate()` directly alters the existing box.
+
+```typescript
+import * as DI from '@ayka/dibox';
+
+// Create a box with initial dependencies
+const box = DI.makeBox({
+  count: () => 0,
+  name: () => 'Alice',
+});
+
+// Mutate the 'count' dependency to always return 1
+box.mutate('count', () => 1);
+
+// Access the mutated dependency
+console.log(box.get('count')); // Outputs: 1
+
+// Mutate 'name' to include a greeting
+box.mutate('name', (box) => `Hello, ${box.get('name')}!`);
+
+// Access the mutated 'name' dependency
+console.log(box.get('name')); // Outputs: Hello, Alice!
+```
 
 ## Receipts
 

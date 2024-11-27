@@ -251,6 +251,39 @@ class Box<shape extends boxShape> {
 	}
 
 	/**
+	 * Modifies a single dependency in the current box instance.
+	 * Unlike `patch()` or `set()` which create a new box, this method mutates the existing box.
+	 *
+	 * @example
+	 * ```ts
+	 * const box = makeBox({ count: () => 0 });
+	 * box.mutate('count', () => 1); // Updates count to always return 1
+	 * ```
+	 *
+	 * @example
+	 * Accessing other dependencies:
+	 * ```ts
+	 * const box = makeBox({
+	 *   name: () => 'Alice',
+	 *   greeting: box => `Hello ${box.get('name')}`
+	 * });
+	 *
+	 * box.mutate('greeting', box => `Hi ${box.get('name')}!`);
+	 * ```
+	 *
+	 * @param key - The dependency key to modify
+	 * @param loadFn - New factory function for the dependency
+	 * @returns The current box instance
+	 * @see {@link patch} For creating a new box with modified dependencies
+	 * @see {@link set} For setting a static value instead of a factory function
+	 */
+	mutate<key extends keyof shape>(key: key, loadFn: loadFn<shape, shape[key]>) {
+		this.clearCache(key);
+		this.#registry[key] = loadFn;
+		return this;
+	}
+
+	/**
 	 * Merges two boxes into a new box, combining their dependencies.
 	 *
 	 * Dependencies from the second box override any matching dependencies from the first box.
