@@ -16,4 +16,4 @@
 
 ## Defined in
 
-[src/Box.ts:79](https://github.com/AndreyMork/dibox/blob/695789d45a4ef94d6e684c565b58e5a5027b964e/src/Box.ts#L79)
+[src/Box.ts:79](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L79)

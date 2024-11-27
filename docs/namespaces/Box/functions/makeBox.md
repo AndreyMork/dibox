@@ -32,7 +32,7 @@ const box = makeBox({
 
 ### Defined in
 
-[src/Box.ts:761](https://github.com/AndreyMork/dibox/blob/695789d45a4ef94d6e684c565b58e5a5027b964e/src/Box.ts#L761)
+[src/Box.ts:794](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L794)
 
 ## makeBox(patch)
 
@@ -52,4 +52,4 @@ const box = makeBox({
 
 ### Defined in
 
-[src/Box.ts:762](https://github.com/AndreyMork/dibox/blob/695789d45a4ef94d6e684c565b58e5a5027b964e/src/Box.ts#L762)
+[src/Box.ts:795](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L795)
