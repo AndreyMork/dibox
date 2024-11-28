@@ -53,7 +53,7 @@ The shape of dependencies contained in this box, mapping keys to their value typ
 
 #### Defined in
 
-[src/Box.ts:128](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L128)
+[src/Box.ts:128](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L128)
 
 ## Accessors
 
@@ -88,7 +88,7 @@ A proxy object with the same shape as the box's dependencies
 
 #### Defined in
 
-[src/Box.ts:741](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L741)
+[src/Box.ts:741](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L741)
 
 ## Methods
 
@@ -119,7 +119,7 @@ for (const [key, value] of box) {
 
 #### Defined in
 
-[src/Box.ts:634](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L634)
+[src/Box.ts:634](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L634)
 
 ***
 
@@ -158,7 +158,7 @@ console.log(box.cached('foo'));  // true
 
 #### Defined in
 
-[src/Box.ts:394](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L394)
+[src/Box.ts:394](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L394)
 
 ***
 
@@ -195,7 +195,7 @@ const value3 = box.get('random'); // New value: e.g., 0.987654321
 
 #### Defined in
 
-[src/Box.ts:560](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L560)
+[src/Box.ts:560](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L560)
 
 ***
 
@@ -235,7 +235,7 @@ const value2 = box2.get('random'); // New random value, different from box1
 
 #### Defined in
 
-[src/Box.ts:350](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L350)
+[src/Box.ts:350](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L350)
 
 ***
 
@@ -264,7 +264,7 @@ console.log(box.entries());  // [['foo', 'bar'], ['baz', 123]]
 
 #### Defined in
 
-[src/Box.ts:612](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L612)
+[src/Box.ts:612](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L612)
 
 ***
 
@@ -326,7 +326,7 @@ If the key does not exist in the registry
 
 #### Defined in
 
-[src/Box.ts:430](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L430)
+[src/Box.ts:430](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L430)
 
 ***
 
@@ -359,7 +359,7 @@ box.has('baz');  // false
 
 #### Defined in
 
-[src/Box.ts:370](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L370)
+[src/Box.ts:370](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L370)
 
 ***
 
@@ -384,7 +384,7 @@ console.log(box.keys());  // ['foo', 'baz']
 
 #### Defined in
 
-[src/Box.ts:576](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L576)
+[src/Box.ts:576](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L576)
 
 ***
 
@@ -436,7 +436,7 @@ If a circular dependency is detected during loading
 
 #### Defined in
 
-[src/Box.ts:463](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L463)
+[src/Box.ts:463](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L463)
 
 ***
 
@@ -489,7 +489,7 @@ console.log(merged.get('value')); // 'override'
 
 #### Defined in
 
-[src/Box.ts:316](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L316)
+[src/Box.ts:316](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L316)
 
 ***
 
@@ -544,7 +544,7 @@ box.mutate('greeting', box => `Hi ${box.get('name')}!`);
 
 #### Defined in
 
-[src/Box.ts:280](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L280)
+[src/Box.ts:280](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L280)
 
 ***
 
@@ -611,7 +611,7 @@ const box = makeBox({
 
 #### Defined in
 
-[src/Box.ts:235](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L235)
+[src/Box.ts:235](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L235)
 
 ***
 
@@ -658,7 +658,7 @@ box.preload(true);
 
 ##### Defined in
 
-[src/Box.ts:665](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L665)
+[src/Box.ts:665](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L665)
 
 #### preload(keys)
 
@@ -674,7 +674,7 @@ box.preload(true);
 
 ##### Defined in
 
-[src/Box.ts:666](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L666)
+[src/Box.ts:666](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L666)
 
 ***
 
@@ -714,7 +714,7 @@ const value3 = box.reload('random'); // New value: e.g., 0.987654321
 
 #### Defined in
 
-[src/Box.ts:507](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L507)
+[src/Box.ts:507](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L507)
 
 ***
 
@@ -745,7 +745,7 @@ const value3 = box.get('random'); // New value: e.g., 0.987654321
 
 #### Defined in
 
-[src/Box.ts:537](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L537)
+[src/Box.ts:537](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L537)
 
 ***
 
@@ -813,7 +813,7 @@ const box = makeBox({
 
 #### Defined in
 
-[src/Box.ts:187](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L187)
+[src/Box.ts:187](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L187)
 
 ***
 
@@ -872,7 +872,7 @@ console.log(box.stats());
 
 #### Defined in
 
-[src/Box.ts:708](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L708)
+[src/Box.ts:708](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L708)
 
 ***
 
@@ -905,7 +905,7 @@ const obj = box.toJS();
 
 #### Defined in
 
-[src/Box.ts:770](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L770)
+[src/Box.ts:770](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L770)
 
 ***
 
@@ -934,4 +934,4 @@ console.log(box.values());  // ['bar', 123]
 
 #### Defined in
 
-[src/Box.ts:594](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L594)
+[src/Box.ts:594](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L594)

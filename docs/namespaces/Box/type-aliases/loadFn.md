@@ -48,4 +48,4 @@ const box = makeBox({
 
 ## Defined in
 
-[src/Box.ts:69](https://github.com/AndreyMork/dibox/blob/a4051a8bb2daf3e4608cc74f5ffa76c67223e300/src/Box.ts#L69)
+[src/Box.ts:69](https://github.com/AndreyMork/dibox/blob/32667f725c68d64dc5c8fc9751dde5370b7962d5/src/Box.ts#L69)

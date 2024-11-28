@@ -364,7 +364,7 @@ box.mutate('name', (box) => `Hello, ${box.get('name')}!`);
 console.log(box.get('name')); // Outputs: Hello, Alice!
 ```
 
-## Receipts
+## Recipes
 
 ### Overriding Dependencies for Testing
 
