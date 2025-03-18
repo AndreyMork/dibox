@@ -1,9 +1,10 @@
 name: Setup
+description: 'Setup the environment for the project'
 
 inputs:
   node-version:
     description: 'Node.js version to install'
-    default: 20
+    default: '22'
 
 runs:
   using: 'composite'

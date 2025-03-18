@@ -14,7 +14,6 @@ test.group('Box: creation', () => {
 		expect(myBox).toBeInstanceOf(DI.box);
 		// biome-ignore lint/complexity/noBannedTypes: <explanation>
 		expectTypeOf<shape>().toEqualTypeOf<{}>();
-		expectTypeOf(myBox.keys).returns.items.toEqualTypeOf<never>();
 	});
 
 	test('`makeBox` with arguments creates a box with the given dependencies', ({
@@ -25,7 +24,6 @@ test.group('Box: creation', () => {
 		type shape = DI.shapeOf<typeof myBox>;
 		expect(myBox.get('foo')).toBe('bar');
 		expectTypeOf<shape>().toEqualTypeOf<{ foo: string }>();
-		expectTypeOf(myBox.keys).returns.items.toEqualTypeOf<'foo'>();
 	});
 });
 
@@ -63,10 +61,6 @@ test.group('Box: setting', () => {
 			baz: number;
 			qux: string;
 		}>();
-
-		expectTypeOf(box2.keys).returns.items.toEqualTypeOf<
-			'foo' | 'baz' | 'qux'
-		>();
 	});
 
 	test('`patch` overrides dependencies and types with the same key', ({
@@ -100,8 +94,6 @@ test.group('Box: setting', () => {
 			value: number;
 			other: string;
 		}>();
-
-		expectTypeOf(box2.keys).returns.items.toEqualTypeOf<'value' | 'other'>();
 	});
 
 	test('`patch` loader functions can access parent box values', ({
@@ -125,8 +117,6 @@ test.group('Box: setting', () => {
 			upper: string;
 			value: string;
 		}>();
-
-		expectTypeOf(box2.keys).returns.items.toEqualTypeOf<'value' | 'upper'>();
 	});
 
 	test('`patch` loader functions cannot access their own patch values', ({
@@ -182,8 +172,6 @@ test.group('Box: setting', () => {
 			value: string;
 			upper: string;
 		}>();
-
-		expectTypeOf(box2.keys).returns.items.toEqualTypeOf<'value' | 'upper'>();
 	});
 
 	test('`set` overrides dependencies and types with the same key', ({
@@ -216,8 +204,6 @@ test.group('Box: setting', () => {
 			value: number;
 			other: string;
 		}>();
-
-		expectTypeOf(box2.keys).returns.items.toEqualTypeOf<'value' | 'other'>();
 	});
 
 	test('`patch` and `set` handle symbol keys and preserve types', ({
@@ -369,7 +355,7 @@ test.group('Box: getting', () => {
 
 		const key = 'unknown' as string;
 
-		if (box.has(key)) {
+		if (DI.hasKey(box, key)) {
 			expectTypeOf(key).toEqualTypeOf<'value' | 'count'>();
 		}
 	});
@@ -705,7 +691,7 @@ test.group('Box: iteration', () => {
 			['baz', 123],
 			[qux, 'qux'],
 		]);
-		expectTypeOf(box.entries()).toEqualTypeOf<
+		expectTypeOf(DI.entries(box)).toEqualTypeOf<
 			[key: 'foo' | 'baz' | typeof qux, value: string | number][]
 		>();
 	});
@@ -717,8 +703,8 @@ test.group('Box: iteration', () => {
 			baz: () => 123,
 			[qux]: () => 'qux',
 		});
-		expect(box.keys()).toStrictEqual(['foo', 'baz', qux]);
-		expectTypeOf(box.keys()).toEqualTypeOf<('foo' | 'baz' | typeof qux)[]>();
+		expect(DI.keys(box)).toStrictEqual(['foo', 'baz', qux]);
+		expectTypeOf(DI.keys(box)).toEqualTypeOf<('foo' | 'baz' | typeof qux)[]>();
 	});
 
 	test('`values` returns an array of values', ({ expect, expectTypeOf }) => {
@@ -729,23 +715,15 @@ test.group('Box: iteration', () => {
 			[qux]: () => 'qux',
 		});
 		expect(box.values()).toStrictEqual(['bar', 123, 'qux']);
-		expectTypeOf(box.values()).toEqualTypeOf<(string | number)[]>();
+		expectTypeOf(DI.values(box)).toEqualTypeOf<(string | number)[]>();
 	});
 
-	test('`Box` implements the `Iterable` protocol', ({
-		expect,
-		expectTypeOf,
-	}) => {
+	test('`Box` implements the `Iterable` protocol', ({ expect }) => {
 		const box = DI.makeBox({ foo: () => 'bar', baz: () => 123 });
 		expect([...box]).toStrictEqual([
 			['foo', 'bar'],
 			['baz', 123],
 		]);
-
-		for (const [key, value] of box) {
-			expectTypeOf(key).toEqualTypeOf<'foo' | 'baz'>();
-			expectTypeOf(value).toEqualTypeOf<string | number>();
-		}
 	});
 
 	test('`preload` eagerly loads specified dependencies', ({ expect }) => {
@@ -917,7 +895,6 @@ test.group('Box: misc', () => {
 		});
 
 		box.get('foo');
-		type shape = DI.shapeOf<typeof box>;
 
 		const stats = box.stats();
 		expect(stats).toEqual({
@@ -930,8 +907,8 @@ test.group('Box: misc', () => {
 		expectTypeOf(stats).toEqualTypeOf<{
 			size: number;
 			cached: number;
-			cachedKeys: (keyof shape)[];
-			notCachedKeys: (keyof shape)[];
+			cachedKeys: DI.boxKey[];
+			notCachedKeys: DI.boxKey[];
 		}>();
 	});
 
