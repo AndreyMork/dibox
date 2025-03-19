@@ -198,10 +198,10 @@ class Box<shape extends boxShape> {
 		return updater(this);
 	}
 
-	extend<newShape extends boxShape>(
-		updater: (box: this) => Box<shapeUpdate<shape, newShape>>,
-	): Box<shapeUpdate<shape, newShape>> {
-		return this.map(updater);
+	plugin<pluginShape extends boxShape>(
+		updater: (box: this) => Box<pluginShape>,
+	) {
+		return this.merge(updater(this));
 	}
 
 	// Cache
