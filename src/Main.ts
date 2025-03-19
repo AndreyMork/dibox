@@ -21,4 +21,5 @@ export type {
 	shapeOf,
 	viewOf,
 	shapeViewOf,
+	extension,
 } from './Box.ts';
