@@ -192,6 +192,18 @@ class Box<shape extends boxShape> {
 		});
 	}
 
+	map<newShape extends boxShape>(
+		updater: (box: this) => Box<newShape>,
+	): Box<newShape> {
+		return updater(this);
+	}
+
+	extend<newShape extends boxShape>(
+		updater: (box: this) => Box<shapeUpdate<shape, newShape>>,
+	): Box<shapeUpdate<shape, newShape>> {
+		return this.map(updater);
+	}
+
 	// Cache
 
 	#getCache<key extends keyof shape>(key: key): shape[key] | undefined {
@@ -351,6 +363,10 @@ export type shapeUpdate<shape extends boxShape, shape2 extends boxShape> = {
 export type patch<shape extends boxShape, parentShape extends boxShape> = {
 	[key in keyof shape]: loadFn<parentShape, shape[key]>;
 };
+
+export type extension<shape extends boxShape, box extends Box<any>> = Box<
+	shapeUpdate<shape, shapeOf<box>>
+>;
 
 export type registry = {
 	[key: boxKey]: loadFn<boxShape, unknown>;
