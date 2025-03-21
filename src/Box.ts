@@ -102,6 +102,13 @@ class Box<shape extends boxShape> {
 		return this.patch(patch);
 	}
 
+	reset<key extends keyof shape, value extends shape[key]>(
+		key: key,
+		loadFn: loadFn<shape, value>,
+	) {
+		return this.set(key, loadFn);
+	}
+
 	declare<key extends boxKey, value>(key: key) {
 		return this.set(key, (self) => declareFn<value>({ key, box: self }));
 	}
@@ -110,6 +117,42 @@ class Box<shape extends boxShape> {
 		this.clearCache(key);
 		this.#registry[key] = loadFn as any;
 		return this;
+	}
+
+	#update<key extends keyof shape, value>(
+		key: key,
+		updater: (value: shape[key]) => value,
+	): loadFn<shape, value> {
+		const oldLoadFn = this.#registry[key];
+		if (oldLoadFn == null) {
+			throw new DependencyNotFoundError(key, this);
+		}
+
+		const newLoadFn: loadFn<shape, value> = (self) =>
+			updater(oldLoadFn(self as Box<boxShape>) as shape[key]);
+
+		return newLoadFn;
+	}
+
+	update<key extends keyof shape, value>(
+		key: key,
+		updater: (value: shape[key]) => value,
+	) {
+		return this.set(key, this.#update(key, updater));
+	}
+
+	updateMut<key extends keyof shape, value>(
+		key: key,
+		updater: (value: shape[key]) => value,
+	) {
+		return this.mutate(key, this.#update(key, updater));
+	}
+
+	alias<key extends keyof shape, aliasKey extends boxKey>(
+		key: key,
+		aliasKey: aliasKey,
+	) {
+		return this.set(aliasKey, (self) => self.get(key));
 	}
 
 	// Getters
@@ -148,7 +191,7 @@ class Box<shape extends boxShape> {
 		this.#keysInProgress.add(key);
 
 		try {
-			const value = loadFn(this) as shape[key];
+			const value = loadFn(this as Box<boxShape>) as shape[key];
 			return value;
 		} finally {
 			this.#keysInProgress.delete(key);
