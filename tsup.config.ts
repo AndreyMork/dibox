@@ -1,7 +1,7 @@
 import * as Tsup from 'tsup';
 // import * as PackageJSON from '#PackageJSON';
 
-const entry = ['src/Main.ts'];
+const entry = ['src/main.ts'];
 
 const outDir = 'dist';
 const format = ['esm' as const, 'cjs' as const];

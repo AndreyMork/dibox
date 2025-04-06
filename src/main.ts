@@ -1,16 +1,14 @@
+export * as Errors from './Errors.ts';
+
 export * as Box from './Box.ts';
 
 export {
-	makeBox,
+	create,
+	create as makeBox,
 	Box as box,
-	DependencyNotFoundError,
-	CircularDependencyError,
-	UnsetDeclaredKeyError,
+	Box as t,
+
 	//
-	keys,
-	values,
-	entries,
-	hasKey,
 } from './Box.ts';
 
 export type {
@@ -19,7 +17,8 @@ export type {
 	patch,
 	loadFn,
 	shapeOf,
-	viewOf,
-	shapeViewOf,
-	extension,
+	view,
+	hide,
+	withShape,
+	readable,
 } from './Box.ts';

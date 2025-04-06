@@ -5,12 +5,11 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"#PackageJSON": ["./package.json"],
-			"#Src/*": ["./src/*"],
-			"#Main": ["./src/Main.ts"],
-			"#Tests/*": ["./tests/*"],
-			"#Types": ["./src/Types/Types.d.ts"],
-			"#Types/*": ["./src/Types/*"]
-		}
+			"#packageJSON": ["./package.json"],
+			"#src/*": ["./src/*"],
+			"#main": ["./src/main.ts"],
+			"#tests/*": ["./tests/*"]
+		},
+		"emitDecoratorMetadata": false
 	}
 }

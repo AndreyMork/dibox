@@ -1,37 +1,56 @@
 export type boxKey = string | symbol | number;
-export type boxShape = Record<boxKey, unknown>;
+export type boxShape = Record<boxKey, any>;
 
-export type shapeOf<t extends Box<any>> =
-	t extends Box<infer shape> ? shape : never;
+export type anyBox = Box<any>;
 
-export type viewOf<box extends Box<any>, keys extends keyof shapeOf<box>> = Box<
-	Pick<shapeOf<box>, keys>
+export type shapeOf<box extends Box<any>> =
+	box extends Box<infer shape> ? shape : never;
+
+export type keysOf<box extends Box<any>> = keyof shapeOf<box>;
+
+export type view<box extends Box<any>, key extends keysOf<box>> = Box<
+	Pick<shapeOf<box>, key>
 >;
 
-export type shapeViewOf<
-	box extends Box<any>,
-	keys extends keyof shapeOf<box>,
-> = shapeOf<viewOf<box, keys>>;
+export type hide<box extends Box<any>, key extends keysOf<box> | boxKey> = Box<
+	Omit<shapeOf<box>, key>
+>;
+
+export type withShape<box extends Box<any>, shape extends boxShape> = Box<
+	shapeUpdate<shapeOf<box>, shape>
+>;
+
+export type shapeUpdate<shape extends boxShape, shape2 extends boxShape> = {
+	[prop in keyof shape | keyof shape2]: prop extends keyof shape2
+		? shape2[prop]
+		: prop extends keyof shape
+			? shape[prop]
+			: never;
+};
+
+export interface readable<shape extends boxShape> {
+	proxy: Readonly<shape>;
+	$: Readonly<shape>;
+	toJS(): shape;
+
+	has(key: boxKey): boolean;
+	get<key extends keyof shape>(key: key): shape[key];
+	load<key extends keyof shape>(key: key): shape[key];
+	transient<key extends keyof shape>(key: key): shape[key];
+	loadDeep<key extends keyof shape>(key: key): shape[key];
+	reload<key extends keyof shape>(key: key): shape[key];
+
+	cached(key: keyof shape): boolean;
+
+	preload(keys: (keyof shape)[] | boolean): this;
+}
 
 export { Box as t, Box };
+class Box<shape extends boxShape> implements readable<shape> {
+	#registry: registry = new Map();
+	#cache: cache = new Map();
 
-export type params = {
-	registry?: registry;
-	cache?: cache;
-};
-
-export type cloneParams<shape extends boxShape> = {
-	keepCache?: boolean | (keyof shape)[];
-};
-
-class Box<shape extends boxShape> {
-	readonly #registry: registry;
-	#cache: cache;
-
-	constructor(params: params) {
-		this.#registry = params.registry ?? {};
-		this.#cache = params.cache ?? {};
-	}
+	// Accessors
 
 	#proxy?: Readonly<shape>;
 	get proxy() {
@@ -56,133 +75,47 @@ class Box<shape extends boxShape> {
 		return Object.fromEntries(this.entries()) as shape;
 	}
 
-	#register<shape2 extends boxShape>(patch: patch<shape2, shape>) {
-		type newShape = shapeUpdate<shape, shape2>;
-
-		const registry = {
-			...this.#registry,
-		};
-
-		for (const key in patch) {
-			registry[key] = patch[key] as any;
-		}
-
-		for (const symKey of Object.getOwnPropertySymbols(patch)) {
-			registry[symKey as keyof newShape] = patch[symKey] as any;
-		}
-
-		return registry;
+	get size() {
+		return this.#registry.size;
 	}
 
-	// Setters
+	// Iteration
 
-	patch<shape2 extends boxShape>(patch: patch<shape2, shape>) {
-		type newShape = shapeUpdate<shape, shape2>;
-
-		const registry = this.#register<shape2>(patch);
-		const cache = { ...this.#cache };
-
-		const newBox = new Box<newShape>({
-			registry,
-			cache,
-		});
-
-		for (const key of getKeys(patch)) {
-			newBox.clearCache(key);
-		}
-
-		return newBox;
+	keys() {
+		return this.#registry.keys().toArray();
 	}
 
-	set<key extends boxKey, value>(key: key, loadFn: loadFn<shape, value>) {
-		type shape2 = { [prop in key]: value };
-		type newPatch = patch<shape2, shape>;
-		const patch = { [key]: loadFn } as newPatch;
-
-		return this.patch(patch);
+	values() {
+		return this.#registry.values().toArray() as unknown[];
 	}
 
-	reset<key extends keyof shape, value extends shape[key]>(
-		key: key,
-		loadFn: loadFn<shape, value>,
-	) {
-		return this.set(key, loadFn);
+	entries() {
+		return this.keys().map(
+			(key) => [key as boxKey, this.get(key) as unknown] as [boxKey, unknown],
+		);
 	}
 
-	declare<key extends boxKey, value>(key: key) {
-		return this.set(key, (self) => declareFn<value>({ key, box: self }));
-	}
-
-	mutate<key extends keyof shape>(key: key, loadFn: loadFn<shape, shape[key]>) {
-		this.clearCache(key);
-		this.#registry[key] = loadFn as any;
-		return this;
-	}
-
-	#update<key extends keyof shape, value>(
-		key: key,
-		updater: (value: shape[key]) => value,
-	): loadFn<shape, value> {
-		const oldLoadFn = this.#registry[key];
-		if (oldLoadFn == null) {
-			throw new DependencyNotFoundError(key, this);
-		}
-
-		const newLoadFn: loadFn<shape, value> = (self) =>
-			updater(oldLoadFn(self as Box<boxShape>) as shape[key]);
-
-		return newLoadFn;
-	}
-
-	update<key extends keyof shape, value>(
-		key: key,
-		updater: (value: shape[key]) => value,
-	) {
-		return this.set(key, this.#update(key, updater));
-	}
-
-	updateMut<key extends keyof shape, value>(
-		key: key,
-		updater: (value: shape[key]) => value,
-	) {
-		return this.mutate(key, this.#update(key, updater));
-	}
-
-	alias<key extends keyof shape, aliasKey extends boxKey>(
-		key: key,
-		aliasKey: aliasKey,
-	) {
-		return this.set(aliasKey, (self) => self.get(key));
+	[Symbol.iterator]() {
+		return this.entries()[Symbol.iterator]();
 	}
 
 	// Getters
 
-	has(key: boxKey): boolean {
-		return key in this.#registry;
-	}
-
-	get<key extends keyof shape>(key: key): shape[key] {
-		if (this.cached(key)) {
-			return this.#getCache(key)!;
-		}
-
-		const value = this.load(key);
-		this.#setCache(key, value);
-
-		return value;
+	has(key: boxKey) {
+		return this.#registry.has(key);
 	}
 
 	#keysInProgress: Set<boxKey> = new Set();
 	load<key extends keyof shape>(key: key): shape[key] {
 		if (this.#keysInProgress.has(key)) {
 			throw new CircularDependencyError({
-				key: key as boxKey,
-				unresolvedKeys: this.#keysInProgress as Set<boxKey>,
+				key: key,
+				unresolvedKeys: this.#keysInProgress,
 				box: this,
 			});
 		}
 
-		const loadFn = this.#registry[key];
+		const loadFn = this.#registry.get(key);
 
 		if (loadFn == null) {
 			throw new DependencyNotFoundError(key, this);
@@ -191,7 +124,7 @@ class Box<shape extends boxShape> {
 		this.#keysInProgress.add(key);
 
 		try {
-			const value = loadFn(this as Box<boxShape>) as shape[key];
+			const value = loadFn(this) as shape[key];
 			return value;
 		} finally {
 			this.#keysInProgress.delete(key);
@@ -202,96 +135,143 @@ class Box<shape extends boxShape> {
 		return this.load(key);
 	}
 
-	fullTransient<key extends keyof shape>(key: key) {
-		return this.clone().transient(key);
+	loadDeep<key extends keyof shape>(key: key) {
+		return this.clone().load(key);
 	}
 
 	reload<key extends keyof shape>(key: key) {
-		return this.clearCache(key).get(key);
+		return this.clearCacheFor(key).get(key);
 	}
 
-	//
+	get<key extends keyof shape>(key: key) {
+		if (this.cached(key)) {
+			return this.#fromCache(key)!;
+		}
 
-	clone(params?: cloneParams<shape>) {
-		const registry = { ...this.#registry };
-		const cache = this.#copyCache(params?.keepCache);
+		const value = this.load(key);
+		this.#setCache(key, value);
 
-		return new Box<shape>({
-			registry,
-			cache,
-		});
+		return value;
 	}
 
-	merge<shape2 extends boxShape>(
-		box: Box<shape2>,
+	//  Setters
+
+	setUnsafe<key extends boxKey, value>(
+		key: key,
+		loadFn: loadFn<shape, value>,
+	): boxSet<this, key, value> {
+		if (this.#registry.has(key)) {
+			throw new UnexpectedKeyResetError({
+				key,
+				knownKeys: this.keys(),
+				box: this,
+			});
+		}
+
+		this.#registry.set(key, loadFn);
+
+		return this as anyBox;
+	}
+
+	set<key extends boxKey, value>(
+		key: key extends keyof shape ? never : key,
+		loadFn: loadFn<shape, value>,
+	): boxSet<this, key, value> {
+		return this.setUnsafe(key, loadFn) as anyBox;
+	}
+
+	setManyUnsafe<shape2 extends boxShape>(
+		patch: patch<shape, shape2>,
 	): Box<shapeUpdate<shape, shape2>> {
-		const registry = {
-			...this.#registry,
-			...box.#registry,
-		};
+		for (const key of getKeys(patch)) {
+			this.setUnsafe(key, patch[key] as any);
+		}
 
-		return new Box({
-			registry,
-		});
+		return this;
 	}
 
-	map<newShape extends boxShape>(
-		updater: (box: this) => Box<newShape>,
-	): Box<newShape> {
-		return updater(this);
+	setMany<shape2 extends boxShape>(
+		patch: shapesOverlap<shape, shape2> extends true
+			? never
+			: patch<shape, shape2>,
+	): Box<shapeUpdate<shape, shape2>> {
+		return this.setManyUnsafe(patch) as anyBox;
 	}
 
-	plugin<pluginShape extends boxShape>(
-		updater: (box: this) => Box<pluginShape>,
+	reset<key extends keyof shape, value extends shape[key]>(
+		key: key,
+		loadFn: loadFn<shape, value>,
 	) {
-		return this.merge(updater(this));
+		this.clearCacheFor(key);
+		this.#registry.set(key, loadFn);
+
+		return this;
+	}
+
+	declare<key extends boxKey, value>(
+		key: key extends keyof shape ? never : key,
+	) {
+		return this.set(key, (self) => declareFn<value>({ key, box: self }));
+	}
+
+	alias<key extends keyof shape, aliasKey extends boxKey>(
+		key: key,
+		aliasKey: aliasKey extends keyof shape ? never : aliasKey,
+	) {
+		return this.set(aliasKey, (self) => self.get(key));
+	}
+
+	updateLoader<key extends keyof shape>(
+		key: key,
+		updater: (value: shape[key]) => shape[key],
+	) {
+		const oldLoadFn = this.#registry.get(key);
+
+		if (oldLoadFn == null) {
+			throw new DependencyNotFoundError(key, this);
+		}
+
+		const newLoadFn: loadFn<shape, shape[key]> = (self) =>
+			updater(oldLoadFn(self) as shape[key]);
+
+		return this.reset(key, newLoadFn);
+	}
+
+	static<key extends boxKey, value>(
+		key: key extends keyof shape ? never : key,
+		value: value,
+	) {
+		return this.set(key, () => value).#setCache(key, value);
 	}
 
 	// Cache
 
-	#getCache<key extends keyof shape>(key: key): shape[key] | undefined {
-		return this.#cache[key] as shape[key] | undefined;
+	cached(key: boxKey) {
+		return this.#cache.has(key);
 	}
 
-	#setCache<key extends keyof shape>(key: key, value: shape[key]) {
-		this.#cache[key] = value;
+	#setCache(key: boxKey, value: unknown) {
+		this.#cache.set(key, value);
 		return this;
 	}
 
-	#copyCache(keepCache?: boolean | (keyof shape)[]) {
-		if (keepCache == null || keepCache === false) {
-			return {};
-		}
-
-		if (keepCache === true) {
-			return { ...this.#cache };
-		}
-
-		const cache: cache = {};
-
-		for (const key of keepCache) {
-			cache[key] = this.#getCache(key);
-		}
-
-		return cache;
-	}
-
-	cached(key: keyof shape) {
-		return key in this.#cache;
-	}
-
-	clearCache(key: keyof shape) {
-		delete this.#cache[key];
-		return this;
+	#fromCache<key extends keyof shape>(key: key) {
+		return this.#cache.get(key) as shape[key] | undefined;
 	}
 
 	resetCache() {
-		this.#cache = {};
+		this.#cache.clear();
 		return this;
 	}
 
-	preload(flag: boolean): this;
-	preload(keys: (keyof shape)[]): this;
+	clearCacheFor(...keys: (keyof shape)[]) {
+		for (const key of keys) {
+			this.#cache.delete(key);
+		}
+
+		return this;
+	}
+
 	preload(keys: (keyof shape)[] | boolean): this {
 		if (typeof keys === 'boolean') {
 			return keys ? this.preload(this.keys()) : this;
@@ -304,32 +284,49 @@ class Box<shape extends boxShape> {
 		return this;
 	}
 
-	// Iteration
+	// Transformation
 
-	keys() {
-		return getKeys(this.#registry);
+	view<key extends keyof shape>(): Box<Pick<shape, key>> {
+		return this as anyBox;
 	}
 
-	[Symbol.iterator]() {
-		return this.entries()[Symbol.iterator]();
+	hide<key extends keyof shape>(): Box<Omit<shape, key>> {
+		return this as anyBox;
 	}
 
-	entries() {
-		return this.keys().map((key) => [key, this.get(key)] as [boxKey, unknown]);
+	clone(): Box<shape> {
+		const newBox = new Box<shape>();
+		newBox.#registry = new Map(this.#registry);
+
+		return newBox;
 	}
 
-	values() {
-		return this.entries().map(([, value]) => value);
+	merge<shape2 extends boxShape>(
+		box2: Box<shape2>,
+	): Box<shapeUpdate<shape, shape2>> {
+		const newBox = this.clone();
+
+		for (const key of box2.keys()) {
+			newBox.#registry.set(key, box2.#registry.get(key)!);
+		}
+
+		return newBox;
+	}
+
+	plugin<pluginShape extends boxShape>(
+		updater: (box: this) => Box<pluginShape>,
+	) {
+		return this.merge(updater(this));
 	}
 
 	// Misc
 
 	stats() {
-		const cachedKeys = getKeys(this.#cache);
+		const cachedKeys = this.#cache.keys().toArray();
 		const notCachedKeys = this.keys().filter((key) => !this.cached(key));
 
 		return {
-			size: this.keys().length,
+			size: this.size,
 			cached: cachedKeys.length,
 			cachedKeys,
 			notCachedKeys,
@@ -337,29 +334,33 @@ class Box<shape extends boxShape> {
 	}
 }
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
-export function makeBox(): Box<{}>;
-export function makeBox<shape extends boxShape>(
-	// biome-ignore lint/complexity/noBannedTypes: <explanation>
-	def: patch<shape, {}>,
-): Box<shape>;
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
-export function makeBox<shape extends boxShape>(def?: patch<shape, {}>) {
-	// biome-ignore lint/complexity/noBannedTypes: <explanation>
-	const box = new Box<{}>({});
+// Factories
 
-	if (def == null) {
-		return box;
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
+export function create(): Box<{}>;
+export function create<shape extends boxShape>(
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
+	patch: patch<{}, shape>,
+): Box<shape>;
+
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
+export function create(patch?: patch<{}, boxShape>): Box<boxShape> {
+	const box = new Box();
+
+	if (patch != null) {
+		box.setMany(patch as never);
 	}
 
-	return box.patch(def);
+	return box;
 }
 
-const getKeys = (registry: Record<boxKey, unknown>) => {
-	const keys = Object.keys(registry) as (keyof boxShape)[];
-	const symKeys = Object.getOwnPropertySymbols(registry).map(
-		(sym) => sym as keyof boxShape,
-	);
+// Utils
+
+const getKeys = (patch: Record<boxKey, any>): boxKey[] => {
+	const keys = Object.keys(patch);
+
+	const symKeys = Object.getOwnPropertySymbols(patch).map((sym) => sym);
+
 	return [...keys, ...symKeys];
 };
 
@@ -370,54 +371,28 @@ const declareFn = <value>(params: { key: boxKey; box: Box<any> }): value => {
 	});
 };
 
-export const keys = <shape extends boxShape>(box: Box<shape>) => {
-	return box.keys() as (keyof shape)[];
-};
-
-export const hasKey = <shape extends boxShape>(
-	box: Box<shape>,
-	key: unknown,
-): key is keyof shape => {
-	return box.has(key as boxKey);
-};
-
-export const entries = <shape extends boxShape>(
-	box: Box<shape>,
-): [keyof shape, shape[keyof shape]][] => {
-	return box.entries() as [keyof shape, shape[keyof shape]][];
-};
-
-export const values = <shape extends boxShape>(
-	box: Box<shape>,
-): shape[keyof shape][] => {
-	return box.values() as shape[keyof shape][];
-};
+// Auxiliary types
 
 export type loadFn<shape extends boxShape, value> = (box: Box<shape>) => value;
 
-export type shapeUpdate<shape extends boxShape, shape2 extends boxShape> = {
-	[prop in keyof shape | keyof shape2]: prop extends keyof shape2
-		? shape2[prop]
-		: prop extends keyof shape
-			? shape[prop]
-			: never;
+export type cache = Map<boxKey, unknown>;
+export type registry = Map<boxKey, loadFn<boxShape, unknown>>;
+
+export type patch<parentShape extends boxShape, patchShape extends boxShape> = {
+	[key in keyof patchShape]: loadFn<parentShape, patchShape[key]>;
 };
 
-export type patch<shape extends boxShape, parentShape extends boxShape> = {
-	[key in keyof shape]: loadFn<parentShape, shape[key]>;
-};
-
-export type extension<shape extends boxShape, box extends Box<any>> = Box<
-	shapeUpdate<shape, shapeOf<box>>
+export type boxSet<box extends Box<any>, key extends boxKey, value> = Box<
+	shapeUpdate<shapeOf<box>, { [prop in key]: value }>
 >;
 
-export type registry = {
-	[key: boxKey]: loadFn<boxShape, unknown>;
-};
+type shapesOverlap<shape1 extends boxShape, shape2 extends boxShape> = [
+	keyof shape1 & keyof shape2,
+] extends [never]
+	? false
+	: true;
 
-export type cache = {
-	[key: boxKey]: unknown;
-};
+// Errors
 
 export class DependencyNotFoundError extends Error {
 	readonly key: boxKey;
@@ -457,6 +432,9 @@ export class CircularDependencyError extends Error {
 		super(
 			`Circular dependency detected for key: ${params.key.toString()}. Unresolved keys: ${unresolvedKeys}`,
 		);
+
+		this.name = this.constructor.name;
+
 		this.key = params.key;
 		this.box = params.box;
 		this.unresolvedKeys = params.unresolvedKeys;
@@ -472,6 +450,24 @@ export class UnsetDeclaredKeyError extends Error {
 			`Tried to get declared key: ${params.key.toString()}. Declared keys must be set before they can be accessed.`,
 		);
 		this.key = params.key;
+		this.box = params.box;
+	}
+}
+
+export class UnexpectedKeyResetError extends Error {
+	readonly key: boxKey;
+	readonly knownKeys: boxKey[];
+	readonly box: Box<any>;
+
+	constructor(params: { key: boxKey; knownKeys: boxKey[]; box: Box<any> }) {
+		super(
+			`Tried to reset key: ${params.key.toString()}. Please use the \`reset\` method to reset keys. Known keys: ${params.knownKeys.join(', ')}.`,
+		);
+
+		this.name = this.constructor.name;
+
+		this.key = params.key;
+		this.knownKeys = params.knownKeys;
 		this.box = params.box;
 	}
 }
