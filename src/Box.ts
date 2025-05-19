@@ -208,6 +208,13 @@ class Box<shape extends boxShape> implements readable<shape> {
 		return this;
 	}
 
+	resetStatic<key extends keyof shape, value extends shape[key]>(
+		key: key,
+		value: value,
+	) {
+		return this.reset(key, () => value);
+	}
+
 	declare<key extends boxKey, value>(
 		key: key extends keyof shape ? never : key,
 	) {
@@ -297,6 +304,16 @@ class Box<shape extends boxShape> implements readable<shape> {
 	clone(): Box<shape> {
 		const newBox = new Box<shape>();
 		newBox.#registry = new Map(this.#registry);
+
+		return newBox;
+	}
+
+	copy<keys extends keyof shape>(...keys: keys[]): Box<shape> {
+		const newBox = this.clone();
+
+		for (const key of keys) {
+			newBox.resetStatic(key, this.get(key));
+		}
 
 		return newBox;
 	}
